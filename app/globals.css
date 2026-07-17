@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Fonts — variables are injected by next/font in layout.tsx */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-anton);
+  --font-mono: var(--font-space-mono);
+
+  /* Palette (from the original :root variables) */
+  --color-bg: #05070c;
+  --color-raise: #0d1220;
+  --color-raise2: #131a2e;
+  --color-line: rgba(230, 236, 245, 0.09);
+  --color-blue-deep: #1b3fcc;
+  --color-blue: #3e8bff;
+  --color-ink: #eceff5;
+  --color-muted: #7c879c;
+
+  /* Custom animation */
+  --animate-pulse-dot: pulse-dot 2s infinite ease-in-out;
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans), sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-blue-deep);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse-dot {
+      animation: none;
+    }
+  }
+}
+
+/* Striped placeholder art behind cards (used when an image fails / for texture) */
+@utility card-stripes {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-raise) 0px,
+    var(--color-raise) 18px,
+    var(--color-raise2) 18px,
+    var(--color-raise2) 36px
+  );
+}
+
+/* Radial glow layered behind the hero */
+@utility hero-glow {
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(62, 139, 255, 0.14), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(27, 63, 204, 0.16), transparent 60%);
+}
