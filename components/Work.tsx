@@ -91,18 +91,20 @@ function Card({
   onZoom: (src: string, alt: string) => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(false);
+  // Once the user starts the video, we hand over to the native controls
+  // (progress bar, time, fullscreen, pause) and hide our custom overlays.
+  const [activated, setActivated] = useState(false);
 
-  const toggleVideo = () => {
+  const startVideo = () => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) {
-      v.muted = false;
-      void v.play();
-    } else {
-      v.pause();
-    }
+    v.muted = false;
+    void v.play();
+    setActivated(true);
   };
+
+  const isVideo = project.type === "video";
+  const showOverlays = !(isVideo && activated);
 
   return (
     <div className="group relative aspect-[4/5] overflow-hidden rounded-[6px] border border-line bg-raise">
@@ -126,28 +128,25 @@ function Card({
               muted
               loop
               playsInline
-              onPlay={() => setPlaying(true)}
-              onPause={() => setPlaying(false)}
-              onEnded={() => setPlaying(false)}
+              controls={activated}
               className="h-full w-full bg-black object-cover"
             />
-            {/* Full-size tap target: tap anywhere on the video to play/pause */}
-            <button
-              type="button"
-              aria-label={playing ? "Pause video" : "Play video"}
-              onClick={toggleVideo}
-              className="absolute inset-0 z-[2] flex items-center justify-center"
-            >
-              <span
-                className={`flex h-16 w-16 items-center justify-center rounded-full border-2 border-blue bg-[rgba(5,7,12,0.65)] backdrop-blur-[4px] transition-[transform,background,opacity] duration-200 hover:scale-[1.08] hover:bg-[rgba(62,139,255,0.25)] ${
-                  playing ? "opacity-0" : "opacity-100"
-                }`}
+            {/* Initial state: big play button. Once started, native controls
+                (time, progress bar, fullscreen) take over. */}
+            {!activated && (
+              <button
+                type="button"
+                aria-label="Play video"
+                onClick={startVideo}
+                className="absolute inset-0 z-[2] flex items-center justify-center"
               >
-                <svg viewBox="0 0 24 24" className="ml-[3px] h-[22px] w-[22px] fill-ink">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-            </button>
+                <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-blue bg-[rgba(5,7,12,0.65)] backdrop-blur-[4px] transition-[transform,background] duration-200 hover:scale-[1.08] hover:bg-[rgba(62,139,255,0.25)]">
+                  <svg viewBox="0 0 24 24" className="ml-[3px] h-[22px] w-[22px] fill-ink">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              </button>
+            )}
           </>
         )}
       </div>
