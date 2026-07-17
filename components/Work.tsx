@@ -47,7 +47,7 @@ export default function Work() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-7 lg:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-7 lg:grid-cols-3">
         {visible.map((project) => (
           <Card
             key={project.num}
